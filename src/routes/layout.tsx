@@ -1,5 +1,7 @@
-import { component$, Slot } from '@builder.io/qwik';
-import type { RequestHandler } from '@builder.io/qwik-city';
+import { component$, Slot, useStylesScoped$ } from "@builder.io/qwik";
+import { Form, RequestHandler } from "@builder.io/qwik-city";
+import { useAuthSession, useAuthSignin, useAuthSignout } from "./plugin@auth";
+import CSS from "./layout.css?inline";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -13,5 +15,34 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 };
 
 export default component$(() => {
-  return <Slot />;
+  useStylesScoped$(CSS);
+  const authSession = useAuthSession();
+  const signinAction = useAuthSignin();
+  const signoutAction = useAuthSignout();
+  return (
+    <div>
+      <header>
+        {authSession.value?.user ? (
+          <>
+            {authSession.value.user.image && (
+              <img width={25} height={25} src={authSession.value.user.image} />
+            )}
+            {authSession.value.user.email}
+            <Form action={signoutAction}>
+              <button>logout</button>
+            </Form>
+          </>
+        ) : (
+          <Form action={signinAction}>
+            <input type="hidden" name="providerId" value="github" />
+            <button>login</button>
+          </Form>
+        )}
+      </header>
+      <hr />
+      <Slot />
+      <hr />
+      <footer>Build with love by Builder.io</footer>
+    </div>
+  );
 });
