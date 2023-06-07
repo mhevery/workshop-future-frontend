@@ -1,5 +1,5 @@
 import { component$, Slot, useStylesScoped$ } from "@builder.io/qwik";
-import { Form, RequestHandler } from "@builder.io/qwik-city";
+import { Form, type RequestHandler } from "@builder.io/qwik-city";
 import { useAuthSession, useAuthSignin, useAuthSignout } from "./plugin@auth";
 import CSS from "./layout.css?inline";
 

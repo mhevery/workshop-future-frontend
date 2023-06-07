@@ -8,7 +8,7 @@ import {
   zod$,
 } from "@builder.io/qwik-city";
 import type { paths } from "@octokit/openapi-types";
-import { Session, createServerClient } from "supabase-auth-helpers-qwik";
+import { type Session, createServerClient } from "supabase-auth-helpers-qwik";
 
 type OrgRepoResponse =
   paths["/repos/{owner}/{repo}"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -56,7 +56,7 @@ export const useIsFavorite = routeLoader$(async (requestEv) => {
   return false;
 });
 
-const useSetFavoriteAction = routeAction$(
+export const useSetFavoriteAction = routeAction$(
   async ({ favorite }, requestEv) => {
     const { params, sharedMap } = requestEv;
     const user = params.user;
@@ -70,12 +70,12 @@ const useSetFavoriteAction = routeAction$(
         requestEv
       );
       if (favorite) {
-        const { data, error } = await supabaseClient
+        const { error } = await supabaseClient
           .from("favorite")
           .upsert([{ email, user, repo }]);
         if (error) throw error;
       } else {
-        const { data, error } = await supabaseClient
+        const { error } = await supabaseClient
           .from("favorite")
           .delete()
           .eq("email", email)

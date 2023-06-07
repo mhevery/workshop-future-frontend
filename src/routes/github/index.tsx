@@ -1,20 +1,19 @@
 import {
   Resource,
   component$,
-  useComputed$,
   useResource$,
   useSignal,
   useTask$,
 } from "@builder.io/qwik";
 import { routeLoader$, server$ } from "@builder.io/qwik-city";
-import { Session, createServerClient } from "supabase-auth-helpers-qwik";
+import { type Session, createServerClient } from "supabase-auth-helpers-qwik";
 import type { paths } from "@octokit/openapi-types";
 
 type SearchUsersResponse =
   paths["/search/users"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export const useFavorites = routeLoader$(async (requestEv) => {
-  const { params, sharedMap } = requestEv;
+  const { sharedMap } = requestEv;
   const session = sharedMap.get("session") as Session | null;
   const email = session?.user?.email;
   if (email) {
